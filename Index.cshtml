@@ -1,98 +1,34 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
+﻿@using System.Data
+@using System.Data.SqlClient;
+@model System.Data.DataTable
 
-<h2>Index</h2>
 
-<div class="row">
-    <div class="col-sm-12">
-        <div>
-            <label class="control-label">First Name<span style="color:red;">*</span></label>
-        </div>
-        <div>
-            <input type="text" class="form-control" id="firstName" placeholder="Enter Your First Name" />
-        </div>
-        <div>
-            <label class="control-label">Last Name<span style="color:red;">*</span></label>
-        </div>
-        <div>
-            <input type="text" class="form-control" id="lastName" placeholder="Enter Your Last Name" />
-        </div>
-        <div>
-            <label class="control-label">Disability</label>
-            <label for="yes" class="control-label">Yes</label>
-            <input type="checkbox" class="form-check-input" id="yes" />
-            <label for="no" class="control-label">No</label>
-            <input type="checkbox" class="form-check-input" id="no" />
-        </div>
-        <div>
-            <label class="control-label">Disability</label>
-            <label for="yes" class="control-label">Yes</label>
-            <input type="radio" class="form-check-input" name="r" value="Customer" id="ryes" />
-            <label for="no" class="control-label">No</label>
-            <input type="radio" class="form-check-input" name="r" value="Admin" id="rno" />
-        </div>
-        <div>
-            <button class="btn btn-primary" onclick="GetEmployee();" />Submit
-        </div>
+
+
+    <div class="link-dark">
+        <div>@Html.ActionLink("Add new user", "Save")</div>
     </div>
+    <table border="1" class="table" style="margin-top:20px">
+        <thead>        
+        <tr>
+            <td>Id</td>
+            <td>User Name</td>
+            <td>Email</td>
+            <td>Password</td>
+        </tr>
 
-</div>
-<script src="~/Scripts/jquery-3.4.1.min.js"></script>
-
-
-<script>
-    function ValidateDetails() {
-        var firstName = $('#firstName').val();
-        var lastName = $('#lastName').val();
-        //get value for checkbox
-        var checkBox = $("#yes")[0].checked;
-        if (!firstName && !lastName)
-            return alert("Please fill requireds Fields");
-        var json = {};
-        json["FirstName"] = firstName;
-        json["LastName"] = lastName;
-        json["Desibility"] = checkBox;
-        SaveDetails(json);
-    }
-    function SaveDetails(json) {       
-        var details = { 'details': json };
-        $.ajax({
-            type: "POST",
-            url: "/Home/Save",
-            data: details,
-            success: function (response) {
-                if (response)
-                    alert("Successfully data saved");
-            },
-            error:function(error) {
-                if (!error)
-                    alert("Some error occured");
+        </thead>
+        <tbody>
+            @foreach (DataRow item in Model.Rows)
+            {
+                <tr>
+                    <td>@item["Id"].ToString()</td>
+                    <td>@item["UserName"].ToString()</td>
+                    <td>@item["Email"].ToString()</td>
+                    <td>@item["Password"].ToString()</td>
+                    <td>@Html.ActionLink("Edit", "Edit", new { id = item["Id"].ToString() })</td>
+                    <td>@Html.ActionLink("Delete", "Delete", new { id = item["Id"].ToString() })</td>
+                </tr>
             }
-        });
-    }
-                function GetEmployee() {
-                    var json = {};
-                    json['Id'] = 1;
-                    //get value for radion btn
-                    var r = $("input[name='r']:checked").val();
-                    //set value for radion
-                   $("[name=r]").val(["Customer"]);
-
-                    var details = { 'details': json };
-                    $.ajax({
-                        type: "POST",
-                        url: "/Home/GetEmployee",
-                        data: details,
-                        success: function (response) {
-                            if (response.Desibility)//set value for Checkbox
-                                $('#yes').attr("checked", true);
-                        },
-                        error: function (error) {
-                            if (!error)
-                                alert("Some error occured");
-                        }
-                    });
-                }
-</script>
+        </tbody>
+    </table>
