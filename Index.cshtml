@@ -1,0 +1,256 @@
+<section class="mt-4">
+    <div class="container">
+        <form class="card">
+            <div class="card-header">
+                <nav class="nav nav-pills nav-fill">
+                    <a class="nav-link tab-pills" href="#">Personal Information</a>
+                    <a class="nav-link tab-pills" href="#">Account Setup</a>
+                    <a class="nav-link tab-pills" href="#">Confirmation</a>
+                </nav>
+            </div>
+            <div class="card-body">
+                <div class="tab d-none">
+                    <div class="form-step active" id="step-1">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name:<span style="color:red">*</span></label>
+                            <input type="text" class="form-control" id="fullName" name="fullName" required>
+                            <div class="invalid-feedback">Please enter at least 2 words.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="address" class="form-label">Address:<span style="color:red">*</span></label>
+                            <textarea class="form-control" id="address" name="address" required minlength="10"></textarea>
+                            <div class="invalid-feedback">Please enter at least 10 words.</div>
+                        </div>
+                        <!-- State and City dropdowns can be populated dynamically based on the selected state -->
+                        <div class="mb-3">
+                            <label for="state" class="form-label">State:<span style="color:red">*</span></label>
+                            <select class="form-select" id="state" name="state" required>
+                                <!-- Populate with states from database -->
+                                <option value="">Select State</option>                                
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="city" class="form-label">City:<span style="color:red">*</span></label>
+                            <select class="form-select" id="city" name="city" required>
+                                <!-- Populate with cities based on the selected state -->
+                                <option value="">Select City</option>
+                                <!-- Cities will be populated dynamically using JavaScript based on the selected state -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab d-none">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username:</label>
+                        <input type="text" class="form-control" id="userName" name="username" required>
+                        <div class="invalid-feedback">Username should be alphanumeric and at least 6 characters long.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" required">
+                        <div class="invalid-feedback">Password should be at least 8 characters long with a mix of letters, numbers, and special characters.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">Confirm Password:</label>
+                        <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
+                        <div class="invalid-feedback">Passwords do not match.</div>
+                    </div>
+                </div>
+
+                <div class="tab d-none">
+                    <p>Review your information and submit.</p>
+                    <!-- Display user input from previous steps for confirmation -->
+                    <div id="confirmation"></div>
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <div class="d-flex">
+                    <button type="button" id="back_button" class="btn btn-secondary" onclick="back()">Previous</button>
+                    <button type="button" id="next_button" class="btn btn-primary ms-auto" onclick="next()">Next</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+      // Your JSON object containing state names and IDs
+        var states = [
+            { "state_name": "Andhra Pradesh" },
+            { "state_name": "Arunachal Pradesh" },
+            { "state_name": "Assam" },
+            { "state_name": "Bihar" },
+            { "state_name": "Chhattisgarh" },
+            { "state_name": "Goa" },
+            { "state_name": "Gujarat" },
+            { "state_name": "Haryana" },
+            { "state_name": "Himachal Pradesh" },
+            { "state_name": "Jharkhand" },
+            { "state_name": "Karnataka" },
+            { "state_name": "Kerala" },
+            { "state_name": "Madhya Pradesh" },
+            { "state_name": "Maharashtra" },
+            { "state_name": "Manipur" },
+            { "state_name": "Meghalaya" },
+            { "state_name": "Mizoram" },
+            { "state_name": "Nagaland" },
+            { "state_name": "Odisha" },
+            { "state_name": "Punjab" },
+            { "state_name": "Rajasthan" },
+            { "state_name": "Sikkim" },
+            { "state_name": "Tamil Nadu" },
+            { "state_name": "Telangana" },
+            { "state_name": "Tripura" },
+            { "state_name": "Uttar Pradesh" },
+            { "state_name": "Uttarakhand" },
+            { "state_name": "West Bengal" }
+        ];
+
+        var dropdown = $('#state');
+        $.each(states, function (index, state) {
+        dropdown.append($('<option>').text(state.state_name).val(state.state_name));
+        });
+      // Populate the dropdown with states
+     
+
+        $('#state').on('change', function () {
+
+            var state =  $('#state').val();
+            var cites = [];            
+            switch (state) {
+                case "Andhra Pradesh":
+                    cites = [{ "cityName": "Visakhapatnam" },
+                    { "cityName": "Vijayawada" },
+                    { "cityName": "Guntur" }
+                    ];
+                    break;
+                case "Arunachal Pradesh":
+                    cites = [{"cityName":"Itanagar"},
+                    {"cityName":"Naharlagun"}                    
+                    ];
+                    break;
+                case "Assam":
+                    cites = [{"cityName":"Guwahati"},
+                    {"cityName":"Dibrugarh"},                  
+                    {"cityName":"Silchar"}                    
+                    ];
+                    break;
+                case "Bihar":
+                    cites = [{"cityName":"Patna"},
+                    {"cityName":"Gaya"},                  
+                    {"cityName":"Bhagalpur"}                    
+                    ];
+                    break;
+            }
+            $.each(cites, function (index, city) {
+                $('#city').append($('<option>').text(city.cityName).val(city.cityName));
+                
+        });
+      });
+    });
+    
+var current = 0;
+var tabs = $('.tab');
+    var tabs_pill = $('.tab-pills');
+    loadFormData(current);
+    $('#next_button').click(function () {
+        if (current === 2)
+            SaveDetails();
+    });
+function loadFormData(n) {
+    $(tabs_pill[n]).addClass('active');
+    $(tabs[n]).removeClass('d-none');
+    $('#back_button').attr('disabled', n == 0 ? true : false);
+    n == (tabs.length - 1) ? $('#next_button').text('Submit').removeAttr('onclick') : $('#next_button').attr('type', 'button').text('Next').attr('onclick', 'next()');
+}
+
+    function next() {
+        var valid = (current === 0) ? personInfoValidation() : accountSetup();
+        if (valid) {
+            $(tabs[current]).addClass('d-none');
+            $(tabs_pill[current]).removeClass('active');
+            current++;
+            loadFormData(current);
+        }
+}
+
+function back() {
+    $(tabs[current]).addClass('d-none');
+    $(tabs_pill[current]).removeClass('active');
+    current--;
+    loadFormData(current);
+    }
+    function personInfoValidation() {
+        var address = $("#address").val();
+        var regex = /^(\S+\s+){9,}\S+$/;
+        var addres = regex.test(address);
+        var fullName = $("#fullName").val();
+        var regex = /\b\w+\b/g;
+        var matches = fullName.match(regex);
+        var stateName = $('#state').val();
+        var city = $('#city').val();
+        (city === "")?$('#city').css("background-color", '#ffd9e2'):$('#city').css("background-color", '#f2f2f0');
+        (!addres)?$('#address').css("background-color", '#ffd9e2'):$('#address').css("background-color", '#f2f2f0');
+        (!matches) ? $('#fullName').css("background-color", '#ffd9e2') : $('#fullName').css("background-color", '#f2f2f0');
+        (stateName==="") ? $('#state').css("background-color", '#ffd9e2') : $('#state').css("background-color", '#f2f2f0');
+        if ((matches && matches.length >= 2) && addres && stateName!=="" &&city!=="")
+            return true;
+         else 
+            return false;
+    }
+    function accountSetup() {
+        var userNameRe = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/;  
+        var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$!%*?&^])[A-Za-z\d$!%*?&^]{8,}$/;
+        var userName = userNameRe.test($('#userName').val());
+        var password = passwordRegex.test($('#password').val());
+        var conpass = passwordRegex.test($('#confirmPassword').val());
+        (!userName) ? $('#userName').css("background-color", '#ffd9e2') : $('#userName').css("background-color", '#f2f2f0');
+        (!password) ? $('#password').css("background-color", '#ffd9e2') : $('#password').css("background-color", '#f2f2f0');
+        (!conpass) ? $('#confirmPassword').css("background-color", '#ffd9e2') : $('#confirmPassword').css("background-color", '#f2f2f0');
+        if ($('#confirmPassword').val() !== $('#password').val()) {
+            alert("Password does not match...");
+            return;
+        }
+         if (userName && password &&conpass)
+            return true;
+         else 
+            return false;
+    }
+    function SaveDetails() {
+        var fullName = $("#fullName").val();
+        var address = $("#address").val();
+        var state = $('#state').val();
+        var city = $('#city').val();
+        var userName = $('#userName').val();
+        var password = $('#password').val();
+        let json = {};
+        json['FullName'] = fullName;
+        json['Address'] = address;
+        json['State'] = state;
+        json['City'] = city;
+        json['UserName'] = userName;
+        json['Password'] = password;
+         var inputData = {
+        'userDetails': json
+      };
+         $.ajax({
+        type: 'POST',
+        url: '/Home/SaveFormDetails',
+        data: inputData,
+        success: function (response) {
+            // Handle the successful response here
+            if (response)
+                alert("Details Save Successfully");
+        },
+        error: function (error) {
+          // Handle errors here
+
+        }
+      });
+
+
+    }
+</script>
