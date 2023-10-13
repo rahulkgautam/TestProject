@@ -1,0 +1,52 @@
+﻿@using System.Data
+@model System.Data.DataTable
+@{
+    ViewBag.Title = "Home";
+}
+    <div class="mt-2">
+        <form method="post" name="Display">
+            <h2>Home</h2>
+            @Html.ActionLink("Add New Record", "Insert")
+            <br />
+            @{
+                if (Model.Rows.Count > 0)
+                {
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <td>
+                                    Product ID
+                                </td>
+                                <td>
+                                    Product Name
+                                </td>
+                                <td>
+                                    Price
+                                </td>
+                                <td>Quantity</td>
+                                <td>Remark</td>
+                            </tr>
+                        </thead>
+                        @foreach (DataRow dr in Model.Rows)
+                        {
+                            <tr>
+                                <td>@dr["ProductId"].ToString() </td>
+                                <td>@dr["ProductName"].ToString() </td>
+                                <td>@dr["Price"].ToString() </td>
+                                <td>@dr["Qyt"].ToString() </td>
+                                <td>@dr["Remark"].ToString() </td>
+                                <td>@Html.ActionLink("Edit ", "Edit", new { StudentID = dr["ProductId"].ToString() })</td>
+                                <td>@Html.ActionLink("| Delete", "Delete", new { StudentID = dr["ProductId"].ToString() })</td>
+                            </tr>
+
+                        }
+                    </table>
+                    <br />
+                }
+                else
+                {
+                    <span> No records found!!</span>
+                }
+            }
+        </form>
+    </div>
